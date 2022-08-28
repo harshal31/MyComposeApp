@@ -13,11 +13,7 @@ pipeline {
                 sh './gradlew assembleRelease'
             }
 
-            post {
-                    always {
-                        archiveArtifacts '**/app-release-unsigned.apk', onlyIfSuccessful: true
-                    }
-            }
+
         }
     }
 }
