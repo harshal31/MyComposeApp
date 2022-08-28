@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     stages {
         stage('Build') {
             steps {
@@ -12,13 +12,12 @@ pipeline {
             steps {
                 sh './gradlew assembleRelease'
             }
+
+            post {
+                    always {
+                        archiveArtifacts '**/app-release-unsigned.apk', onlyIfSuccessful: true
+                    }
+            }
         }
     }
-     
-    post {
-        always {
-            archiveArtifacts '**/app-release-unsigned.apk', onlyIfSuccessful: true
-        }
-    }
- 
 }
