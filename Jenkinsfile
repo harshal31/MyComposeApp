@@ -12,8 +12,12 @@ pipeline {
             steps {
                 sh './gradlew assembleRelease'
             }
-
-
         }
+    }
+
+    post {
+            always {
+                archiveArtifacts artifacts: 'app/build/outputs/apk/**/*.jar', fingerprint: true
+            }
     }
 }
