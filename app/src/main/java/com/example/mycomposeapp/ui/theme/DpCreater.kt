@@ -4,16 +4,20 @@
 package com.example.mycomposeapp.ui.theme
 
 import java.io.File
+import kotlin.system.measureTimeMillis
 
 
 infix fun IntRange.writeDpFromSelectedRangeIntoFile(file: File) {
-    val list = mutableListOf<String>()
-    for (i in this) {
-        transformWordIntoDp(i, list)
+    val time = measureTimeMillis {
+        val list = mutableListOf<String>()
+        for (i in this) {
+            transformWordIntoDp(i, list)
+        }
+        val kl = list.joinToString("\n")
+        file.appendText("import androidx.compose.ui.unit.dp\n")
+        file.appendText(kl)
     }
-    val kl = list.joinToString("\n")
-    file.appendText("import androidx.compose.ui.unit.dp\n")
-    file.appendText(kl)
+    println("File write within $time milli-seconds.")
 }
 
 

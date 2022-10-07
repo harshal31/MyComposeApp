@@ -46,13 +46,13 @@ fun NewGreet() {
             .border(width = 2.dp, color = Color.Black, shape = RoundedCornerShape(6.dp))
             .padding(all = 10.dp)
         ) {
-            Text(text = "Hello ${viewModel.state.value}!")
+            /*Text(text = "Hello ${viewModel.state.value}!")
             Spacer(modifier = Modifier.height(10.dp))
             Button(onClick = {
                 viewModel.triggerState()
             }) {
                 Text(text = "Click me")
-            }
+            }*/
         }
     }
 }
