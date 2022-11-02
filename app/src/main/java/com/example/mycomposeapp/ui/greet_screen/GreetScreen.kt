@@ -29,24 +29,18 @@ import androidx.navigation.NavController
 import com.example.mycomposeapp.data.ResponseState
 import com.example.mycomposeapp.model.PostsItem
 import com.example.mycomposeapp.navigation.Route
+import com.example.mycomposeapp.ui.genericUIComposables.IconState
+import com.example.mycomposeapp.ui.genericUIComposables.TextFieldWithSwipeSuffixIcon
 import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun Greeting(navController: NavController) {
+fun PostScreen(navController: NavController) {
     /**
      * viewModel is used to hold data for the current compose screen
      * when compose screen is destroy view model is also destroy
      */
     val viewModel = viewModel<GreetViewModel>()
-
-    /**
-     * shareModel between two viewModel using this we can share data across
-     * two viewModel
-     * e.g - GreetScreen: com.example.mycomposeapp.ui.greet_screen.ShareViewModel@2ac9c97
-     */
-
-    val shareModel = viewModel<ShareViewModel>(LocalContext.current as ComponentActivity)
 
     PostsScreenWithSearch(viewModel = viewModel) {
         navController.navigate(Route.NEW_GREET)
@@ -57,19 +51,32 @@ fun Greeting(navController: NavController) {
 @ExperimentalFoundationApi
 @Composable
 fun PostsScreenWithSearch(viewModel: GreetViewModel, onPostItemClick: () -> Unit) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .wrapContentHeight()) {
 
-        TextField(value = viewModel.searchValue.observeAsState("").value, onValueChange = {
-            viewModel.searchValue.postValue(it)
-        }, trailingIcon = {
-            Icon(imageVector = Icons.Default.Search, contentDescription = "searchIcon")
-        }, modifier = Modifier
+    /**
+     * shareModel between two viewModel using this we can share data across
+     * two viewModel
+     * e.g - GreetScreen: com.example.mycomposeapp.ui.greet_screen.ShareViewModel@2ac9c97
+     */
+    val shareModel = viewModel<ShareViewModel>(LocalContext.current as ComponentActivity)
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(all = 8.dp),
+            .wrapContentHeight()
+    ) {
+
+        TextField(value = viewModel.searchValue.observeAsState("").value,
+            onValueChange = {
+                viewModel.searchValue.postValue(it)
+            },
+            trailingIcon = {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "searchIcon")
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 8.dp),
             label = { Text(text = "Search") },
-            placeholder = { Text(text = "Search for title") }, shape = RoundedCornerShape(10.dp),
+            placeholder = { Text(text = "Search for title") },
+            shape = RoundedCornerShape(10.dp),
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
@@ -78,34 +85,45 @@ fun PostsScreenWithSearch(viewModel: GreetViewModel, onPostItemClick: () -> Unit
             )
         )
 
-        val search = viewModel.searchValue.observeAsState().value ?: ""
-        when (val state = viewModel.posts.value) {
-            is ResponseState.Success -> PostsScreen(state.response.filter { it.title.contains(search) }) {
-                onPostItemClick()
+        TextFieldWithSwipeSuffixIcon(
+            value = viewModel.searchValue.observeAsState("").value,
+            onValueChange = { viewModel.searchValue.value = it },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = 8.dp),
+            iconState = IconState.TRAILING,
+            onIconChanged = {
+
             }
-            is ResponseState.Progress -> ProgressScreen()
-            else -> {}
-        }
+        )
+
+        val search = viewModel.searchValue.observeAsState().value ?: ""
+//        when (val state = viewModel.posts.value) {
+//            is ResponseState.Success -> PostsScreen(state.response.filter { it.title.contains(search) }) {
+//                shareModel.postItem = it
+//                onPostItemClick()
+//            }
+//            is ResponseState.Progress -> ProgressScreen()
+//            else -> {}
+//        }
     }
 }
 
-
 @ExperimentalFoundationApi
 @Composable
-fun PostsScreen(posts: List<PostsItem>, click: () -> Unit) {
+fun PostsScreen(posts: List<PostsItem>, click: (item: PostsItem) -> Unit) {
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
     LazyColumn(
-        state = listState, modifier = Modifier
-            .fillMaxSize()
+        state = listState, modifier = Modifier.fillMaxSize()
     ) {
 
         itemsIndexed(posts) { index, item ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = click)
+                    .clickable { click(item) }
                     .padding(start = 8.dp, end = 8.dp, bottom = 16.dp)
                     .animateItemPlacement(),
                 shape = CardDefaults.outlinedShape,

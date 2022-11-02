@@ -164,7 +164,7 @@ object AutoDpCreator {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        (1..9999).writeDpFromSelectedRangeIntoFile1(File("/Users/harshalchaudhari/AndroidStudioProjects/Compose/app/src/main/java/com/example/mycomposeapp/ui/theme/Utils.kt"), withConst = true)
+//        (1..9999).writeDpFromSelectedRangeIntoFile1(File("/Users/harshalchaudhari/AndroidStudioProjects/Compose/app/src/main/java/com/example/mycomposeapp/ui/theme/Utils.kt"), withConst = true)
     }
 
 

@@ -4,7 +4,8 @@
 package com.example.mycomposeapp.ui.greet_screen
 
 import androidx.lifecycle.ViewModel
+import com.example.mycomposeapp.model.PostsItem
 
 class ShareViewModel: ViewModel() {
-    var str = 0
+    lateinit var postItem: PostsItem
 }
