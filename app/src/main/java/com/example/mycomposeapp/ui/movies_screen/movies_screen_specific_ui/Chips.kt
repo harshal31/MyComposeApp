@@ -1,9 +1,7 @@
-/**
- * Copyright 2022 Lenovo, All Rights Reserved *
- */
+
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 
-package com.example.mycomposeapp.ui.genericUIComposables
+package com.example.mycomposeapp.ui.movies_screen.movies_screen_specific_ui
 
 import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi

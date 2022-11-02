@@ -1,6 +1,4 @@
-/**
- * Copyright 2022 Lenovo, All Rights Reserved *
- */
+
 package com.example.mycomposeapp.ui.movies_screen.repository
 
 import com.example.mycomposeapp.data.ResponseState

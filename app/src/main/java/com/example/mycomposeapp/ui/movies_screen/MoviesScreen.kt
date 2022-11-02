@@ -1,13 +1,10 @@
-/**
- * Copyright 2022 Lenovo, All Rights Reserved *
- */
+
 @file:OptIn(ExperimentalLifecycleComposeApi::class, ExperimentalAnimationApi::class)
 
 package com.example.mycomposeapp.ui.movies_screen
 
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,7 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.navigation.NavController
 import com.example.mycomposeapp.data.ResponseState
-import com.example.mycomposeapp.ui.genericUIComposables.GenreChip
+import com.example.mycomposeapp.ui.movies_screen.movies_screen_specific_ui.GenreChip
 import com.example.mycomposeapp.ui.genericUIComposables.IconState
 import com.example.mycomposeapp.ui.genericUIComposables.ScrollAnimation
 import com.example.mycomposeapp.ui.genericUIComposables.TextFieldWithSwipeSuffixIcon

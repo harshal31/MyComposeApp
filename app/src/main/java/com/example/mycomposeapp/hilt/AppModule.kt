@@ -1,6 +1,4 @@
-/**
- * Copyright 2022 Lenovo, All Rights Reserved *
- */
+
 package com.example.mycomposeapp.hilt
 
 import com.example.mycomposeapp.data.TmdbService

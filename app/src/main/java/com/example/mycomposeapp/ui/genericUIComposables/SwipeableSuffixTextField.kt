@@ -1,6 +1,4 @@
-/**
- * Copyright 2022 Lenovo, All Rights Reserved *
- */
+
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
 
 package com.example.mycomposeapp.ui.genericUIComposables
