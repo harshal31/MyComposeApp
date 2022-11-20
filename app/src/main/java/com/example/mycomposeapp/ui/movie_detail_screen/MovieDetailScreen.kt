@@ -76,8 +76,6 @@ fun MovieDetailSection(item: MovieDetailResponse, modifier: Modifier) {
                     .clip(RoundedCornerShape(15))
             )
 
-
-
             Column(modifier = Modifier.wrapContentSize()) {
                 val year = item.releaseDate.split("-").firstOrNull() ?: ""
                 Text(
@@ -111,7 +109,6 @@ fun MovieHeader(item: MovieDetailResponse, modifier: Modifier) {
             .build(),
         contentScale = ContentScale.FillBounds,
     )
-
     Image(
         modifier = modifier,
         painter = painter,
@@ -173,7 +170,6 @@ fun MovieOverviewAndTagline(item: MovieDetailResponse) {
         )
 
         Spacer(modifier = Modifier.height(2.dp))
-
         ExpandableText(text = item.overview, color = textColor(), size = 16.dp)
     }
 }
