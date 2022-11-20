@@ -6,7 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.mycomposeapp.navigation.AppNavigator
 import com.example.mycomposeapp.ui.theme.MyComposeAppTheme
@@ -23,7 +24,6 @@ class MainActivity : ComponentActivity() {
                     AppNavigator()
                 }
             }
-
         }
     }
 }

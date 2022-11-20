@@ -1,5 +1,6 @@
 package com.example.mycomposeapp.model
 
+import com.example.mycomposeapp.ui.movies_screen.repository.TmdbState
 import com.google.gson.annotations.SerializedName
 
 data class Genre(
@@ -11,5 +12,6 @@ data class GenreType(
     @SerializedName("id")
     val id: Int? = null, // 28
     @SerializedName("name")
-    val name: String = ""  // Action
+    val name: String = "",  // Action
+    var tmdbState: TmdbState = TmdbState.MOVIES
 )

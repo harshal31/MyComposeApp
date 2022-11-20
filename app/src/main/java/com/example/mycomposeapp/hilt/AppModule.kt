@@ -1,6 +1,7 @@
 
 package com.example.mycomposeapp.hilt
 
+import com.example.mycomposeapp.data.MovieDetailService
 import com.example.mycomposeapp.data.TmdbService
 import com.example.mycomposeapp.ui.utils.WebUrlConstant
 import com.google.gson.Gson
@@ -55,4 +56,10 @@ object AppModule {
     fun provideApiInterface(retrofit: Retrofit): TmdbService {
         return retrofit.create(TmdbService::class.java)
     }
+
+    @Provides
+    fun provideMovieDetailService(retrofit: Retrofit): MovieDetailService {
+        return retrofit.create(MovieDetailService::class.java)
+    }
+
 }

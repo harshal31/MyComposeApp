@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,9 +51,13 @@ fun TextFieldWithSwipeSuffixIcon(
     onIconChanged: ((Int) -> Unit)? = null
 ) {
     val pagerState = rememberPagerState()
+    var oldValue by rememberSaveable { mutableStateOf(-1)  }
 
     LaunchedEffect(key1 = pagerState.currentPage) {
-        onIconChanged?.invoke(pagerState.currentPage)
+        if (oldValue != pagerState.currentPage) {
+            oldValue = pagerState.currentPage
+            onIconChanged?.invoke(pagerState.currentPage)
+        }
     }
 
     when (iconState) {
@@ -171,5 +176,4 @@ object ScrollAnimation {
             initialOffsetY = { 60 }, animationSpec = tween()
         ) + fadeIn() with slideOutVertically(targetOffsetY = { -60 }, animationSpec = tween()) + fadeOut()
     }
-
 }

@@ -15,10 +15,16 @@ interface TmdbService {
     suspend fun getPosts(): Response<List<PostsItem>>
 
     @GET(EndPointConstant.DISCOVER_MOVIES_URL)
-    suspend fun getMoviesAsPerGenre(@QueryMap map: Map<String, @JvmSuppressWildcards Any?>): Response<Movies>
+    suspend fun getMoviesAsPerGenre(@QueryMap map: Map<String, @JvmSuppressWildcards Any?>): Movies
 
     @GET(EndPointConstant.DISCOVER_TV_URL)
-    suspend fun getTvShowsAsPerGenre(@QueryMap map: Map<String, @JvmSuppressWildcards Any?>): Response<Movies>
+    suspend fun getTvShowsAsPerGenre(@QueryMap map: Map<String, @JvmSuppressWildcards Any?>): Movies
+
+    @GET(EndPointConstant.DISCOVER_MOVIES_URL)
+    suspend fun getMoviesAsPerGenreResponse(@QueryMap map: Map<String, @JvmSuppressWildcards Any?>): Response<Movies>
+
+    @GET(EndPointConstant.DISCOVER_TV_URL)
+    suspend fun getTvShowsAsPerGenreResponse(@QueryMap map: Map<String, @JvmSuppressWildcards Any?>): Response<Movies>
 
     @GET(EndPointConstant.GENRE_MOVIES_URL)
     suspend fun getMoviesGenre(@QueryMap map: Map<String, @JvmSuppressWildcards Any?>): Response<Genre>

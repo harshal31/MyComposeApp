@@ -140,31 +140,9 @@ object AutoDpCreator {
         else convertIntToWordWhichContainTripleDigit(result, separator, withConst)
     }
 
-    fun asd(i: Int, separator: String = "_") {
-        if(i < 100) {
-            convertIntToWordWhichContainDoubleDigit(i, separator)
-        } else {
-            if (i.toString().length < 5) {
-                builder.append(units[i.toString()[0].digitToInt()])
-                builder.append(separator)
-                val k = hundreds[i.toString().length]
-                if (k != null) {
-                    builder.append(k)
-                    builder.append("_")
-                }
-
-                checkLengthOfRemainingNumberAndFormWord(i, 1, separator)
-            } else {
-
-            }
-        }
-    }
-
     @JvmStatic
     fun main(args: Array<String>) {
 //        (1..9999).writeDpFromSelectedRangeIntoFile1(File("/Users/harshalchaudhari/AndroidStudioProjects/Compose/app/src/main/java/com/example/mycomposeapp/ui/theme/Utils.kt"), withConst = true)
     }
-
-
 
 }

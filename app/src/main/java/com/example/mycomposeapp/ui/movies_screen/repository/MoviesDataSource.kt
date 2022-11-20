@@ -5,7 +5,6 @@ import com.example.mycomposeapp.data.ResponseState
 import com.example.mycomposeapp.data.TmdbService
 import com.example.mycomposeapp.data.coroutineApiCall
 import com.example.mycomposeapp.model.Genre
-import com.example.mycomposeapp.model.Movies
 import javax.inject.Inject
 
 class MoviesDataSource @Inject constructor(private val moviesService: TmdbService) {
@@ -14,17 +13,18 @@ class MoviesDataSource @Inject constructor(private val moviesService: TmdbServic
         return coroutineApiCall { moviesService.getMoviesGenre(map) }
     }
 
-    suspend fun getMoviesListAsPerGenre(map: Map<String, Any?>): ResponseState<Movies> {
-        return coroutineApiCall { moviesService.getMoviesAsPerGenre(map) }
-    }
+    suspend fun getMoviesListAsPerGenre(map: Map<String, Any?>) = moviesService.getMoviesAsPerGenre(map)
 
     suspend fun getTvShowsGenre(map: Map<String, Any?>): ResponseState<Genre> {
         return coroutineApiCall { moviesService.getTvShowsGenre(map) }
     }
 
-    suspend fun getTvShowsListAsPerGenre(map: Map<String, Any?>): ResponseState<Movies> {
-        return coroutineApiCall { moviesService.getTvShowsAsPerGenre(map) }
-    }
+    suspend fun getTvShowsListAsPerGenre(map: Map<String, Any?>) = moviesService.getTvShowsAsPerGenre(map)
+
+    suspend fun getMoviesAsPerResponse(map: Map<String, Any?>) = coroutineApiCall { moviesService.getMoviesAsPerGenreResponse(map) }
+    suspend fun getTvShowsAsPerResponse(map: Map<String, Any?>) = coroutineApiCall { moviesService.getTvShowsAsPerGenreResponse(map) }
+
+
 
 }
 

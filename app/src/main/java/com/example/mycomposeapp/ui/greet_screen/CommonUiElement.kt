@@ -1,24 +1,30 @@
-
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.mycomposeapp.ui.greet_screen
 
+import androidx.annotation.RawRes
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
 import androidx.navigation.NavGraphBuilder
+import com.airbnb.lottie.compose.*
 import com.google.accompanist.navigation.animation.composable
 
 
@@ -38,7 +44,8 @@ fun NavGraphBuilder.animatedComposable(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
     deepLinks: List<NavDeepLink> = emptyList(),
-    content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit) {
+    content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+) {
 
 
     composable(
@@ -58,5 +65,54 @@ fun NavGraphBuilder.animatedComposable(
             slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, animationSpec = tween(500))
         },
         content
+    )
+}
+
+
+@Composable
+fun LottieAnimationAccordingToRes(@RawRes res: Int) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(res))
+    val progress by animateLottieCompositionAsState(composition, iterations = LottieConstants.IterateForever)
+    LottieAnimation(
+        composition = composition,
+        progress = { progress },
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                horizontal = 8.dp, vertical = 8.dp
+            )
+    )
+}
+
+
+@Composable
+fun ExpandableText(text: String, color: Color, size: Dp, minLinesToBeDisplayed: Int = 9) {
+    var isExpanded by remember { mutableStateOf(false) }
+    val textLayoutResultState = remember { mutableStateOf<TextLayoutResult?>(null) }
+    var finalText by remember { mutableStateOf(text) }
+    val textLayoutResult = textLayoutResultState.value
+
+    LaunchedEffect(textLayoutResult) {
+        if (textLayoutResult == null) return@LaunchedEffect
+        when {
+            isExpanded -> finalText = text
+            else -> {
+                if (textLayoutResult.hasVisualOverflow) {
+                    val lastCharIndex = textLayoutResult.getLineEnd(minLinesToBeDisplayed - 1)
+                    val showMoreString = "......."
+                    val adjustedText = text.substring(startIndex = 0, endIndex = lastCharIndex)
+
+                    finalText = "$adjustedText$showMoreString"
+                }
+            }
+        }
+    }
+    Text(
+        text = finalText,
+        maxLines = if (isExpanded) Int.MAX_VALUE else minLinesToBeDisplayed,
+        onTextLayout = { textLayoutResultState.value = it },
+        modifier = Modifier
+            .clickable(enabled = true) { isExpanded = !isExpanded }
+            .animateContentSize(),
     )
 }

@@ -19,7 +19,7 @@ data class MoviesResult(
     @SerializedName("adult")
     val adult: Boolean = false, // false
     @SerializedName("backdrop_path")
-    val backdropPath: String = "", // /y5Z0WesTjvn59jP6yo459eUsbli.jpg
+    val backdropPath: String? = "", // /y5Z0WesTjvn59jP6yo459eUsbli.jpg
     @SerializedName("genre_ids")
     val genreIds: List<Int> = listOf(),
     @SerializedName("id")
@@ -33,7 +33,7 @@ data class MoviesResult(
     @SerializedName("popularity")
     val popularity: Double = 0.0, // 5162.285
     @SerializedName("poster_path")
-    val posterPath: String = "", // /yw8NQyvbeNXoZO6v4SEXrgQ27Ll.jpg
+    val posterPath: String? = "", // /yw8NQyvbeNXoZO6v4SEXrgQ27Ll.jpg
     @SerializedName("release_date")
     val releaseDate: String = "", // 2022-10-06
     @SerializedName("title")

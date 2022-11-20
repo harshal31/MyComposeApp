@@ -19,11 +19,19 @@ class MoviesRepository @Inject constructor(private val moviesDataSource: MoviesD
         }
     }
 
-    suspend fun getMoviesOrTvShowsAsPerGenreId(tmdbState: TmdbState, genreId: String? = null, page: Int = 1): ResponseState<Movies> {
+    suspend fun getMoviesOrTvShowsAsPerGenreId(tmdbState: TmdbState, genreId: String? = null, page: Int = 1): Movies {
         return if (tmdbState == TmdbState.MOVIES) {
             getMoviesListAsPerGenre(movieListMap(page, genreId))
         } else {
             getTvShowsListAsPerGenre(tvShowsMap(page, genreId))
+        }
+    }
+
+    suspend fun getMoviesOrTvShows(tmdbState: TmdbState, genreId: String? = null, page: Int = 1): ResponseState<Movies> {
+        return if (tmdbState == TmdbState.MOVIES) {
+            moviesDataSource.getMoviesAsPerResponse(movieListMap(page, genreId))
+        } else {
+            moviesDataSource.getTvShowsAsPerResponse(tvShowsMap(page, genreId))
         }
     }
 
