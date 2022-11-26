@@ -6,11 +6,9 @@ package com.example.mycomposeapp.ui.movie_detail_screen
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -37,67 +35,56 @@ fun MovieDetailScreen(movieId: Int) {
     movieDetailViewModel.getMovieDetail(movieId)
 
     when (val item = movieDetailViewModel.movieDetailResponse.value) {
-        is ResponseState.Failure -> {
-            if (item.responseCode == "502") {
-                LottieAnimationAccordingToRes(R.raw.no_internet)
-            } else {
-                LottieAnimationAccordingToRes(R.raw.error_404)
-            }
-        }
+        is ResponseState.Failure -> LottieAnimationAccordingToRes(if (item.responseCode == "502") R.raw.no_internet else R.raw.error_404)
         is ResponseState.Loading -> ProgressScreen()
         is ResponseState.Success -> {
             MovieDetailSection(
-                item = item.response,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
+                item = item.response
             )
         }
     }
 }
 
 @Composable
-fun MovieDetailSection(item: MovieDetailResponse, modifier: Modifier) {
+fun MovieDetailSection(item: MovieDetailResponse) {
     val verticalScrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 8.dp)
             .verticalScroll(verticalScrollState)
     ) {
 
-        Row(modifier = modifier, horizontalArrangement = Arrangement.Start) {
-            MovieHeader(
-                item,
-                Modifier
-                    .fillMaxWidth(0.45f)
-                    .height(300.dp)
-                    .padding(top = 8.dp, end = 8.dp)
-                    .clip(RoundedCornerShape(15))
+        MovieHeader(
+            item,
+            Modifier
+                .aspectRatio(12f / 9f)
+                .padding(bottom = 8.dp)
+        )
+
+        Column(
+            modifier = Modifier
+                .wrapContentSize()
+                .padding(horizontal = 8.dp)
+        ) {
+            val year = item.releaseDate.split("-").firstOrNull() ?: ""
+            Text(
+                text = item.title.plus(if (year.isNotEmpty()) " (${year})" else ""),
+                color = textColor(),
+                fontSize = 22.sp, fontWeight = FontWeight.Bold, modifier = Modifier
+                    .padding(all = 2.dp)
+                    .horizontalScroll(rememberScrollState())
+
             )
 
-            Column(modifier = Modifier.wrapContentSize()) {
-                val year = item.releaseDate.split("-").firstOrNull() ?: ""
-                Text(
-                    text = item.title.plus(if (year.isNotEmpty()) " (${year})" else ""),
-                    color = textColor(),
-                    fontSize = 22.sp, fontWeight = FontWeight.Bold, modifier = Modifier
-                        .padding(all = 2.dp)
-                        .horizontalScroll(rememberScrollState())
-                )
-
-                MovieReleaseInfoGenreAndDurationDetail(
-                    item, Modifier
-                        .fillMaxSize()
-                        .horizontalScroll(rememberScrollState())
-                        .padding(top = 4.dp, bottom = 2.dp)
-                )
-                MovieOverviewAndTagline(item = item)
-            }
+            MovieReleaseInfoGenreAndDurationDetail(
+                item, Modifier
+                    .fillMaxSize()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(top = 4.dp, bottom = 2.dp)
+            )
+            MovieOverviewAndTagline(item = item)
         }
-
     }
-
 }
 
 @Composable
@@ -116,7 +103,6 @@ fun MovieHeader(item: MovieDetailResponse, modifier: Modifier) {
         contentDescription = "Cat"
     )
 }
-
 
 @Composable
 fun MovieReleaseInfoGenreAndDurationDetail(item: MovieDetailResponse, modifier: Modifier) {
@@ -137,10 +123,10 @@ fun MovieReleaseInfoGenreAndDurationDetail(item: MovieDetailResponse, modifier: 
             )
         }
 
-        if (item.runtime.convertToHourAndMin().isNotEmpty()) {
+        if (item.runtime.minutes.toString().isNotEmpty()) {
             Spacer(Modifier.padding(horizontal = 2.dp))
             Text(
-                text = item.runtime.convertToHourAndMin(),
+                text = item.runtime.minutes.toString(),
                 color = textColor(),
                 fontSize = 16.sp,
             )
@@ -170,20 +156,11 @@ fun MovieOverviewAndTagline(item: MovieDetailResponse) {
         )
 
         Spacer(modifier = Modifier.height(2.dp))
-        ExpandableText(text = item.overview, color = textColor(), size = 16.dp)
+        ExpandableText(text = item.overview, color = textColor(), size = 16.sp)
     }
 }
 
 @Composable
 fun textColor(): Color {
     return if (isSystemInDarkTheme()) Color.White else Color.Black
-}
-
-fun Int.convertToHourAndMin(): String {
-    val minutes = this.minutes
-    val hour = minutes.inWholeHours
-    val remMin = minutes.minus(hour.minutes).inWholeMinutes
-    val hr = if (hour != 0L) "$hour hr" else ""
-    val min = if (remMin != 0L) "$remMin min" else ""
-    return "$hr $min"
 }

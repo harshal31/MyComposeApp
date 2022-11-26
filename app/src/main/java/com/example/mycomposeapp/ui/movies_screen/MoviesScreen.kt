@@ -2,7 +2,6 @@
 
 package com.example.mycomposeapp.ui.movies_screen
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
@@ -23,9 +22,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
-import androidx.paging.PagingData
-import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -41,7 +37,6 @@ import com.example.mycomposeapp.ui.movies_screen.movies_screen_specific_ui.Genre
 import com.example.mycomposeapp.ui.movies_screen.repository.MoviesViewModel
 import com.example.mycomposeapp.ui.movies_screen.repository.TmdbState
 import com.example.mycomposeapp.ui.utils.WebUrlConstant
-import kotlinx.coroutines.flow.Flow
 
 
 @Composable
@@ -68,16 +63,13 @@ fun MoviesScreen(onItemClick: (MoviesResult) -> Unit) {
                 if (genre.value !is ResponseState.Loading) {
                     viewModel.resetPagination()
                     viewModel.initiateApiAsPerApiType(TmdbState.MOVIES.getState(it) to null)
+                    viewModel.callMoviesOrTvShows(TmdbState.MOVIES.getState(it))
                 }
             }
         )
 
         when (val it = genre.value) {
-            is ResponseState.Failure -> {
-                if (it.responseCode == "502") {
-                    LottieAnimationAccordingToRes(R.raw.no_internet)
-                }
-            }
+            is ResponseState.Failure -> LottieAnimationAccordingToRes(if (it.responseCode == "502") R.raw.no_internet else R.raw.error_404)
             is ResponseState.Loading -> ProgressScreen()
             is ResponseState.Success -> {
                 AnimatedContent(targetState = it.response.genres, transitionSpec = { ScrollAnimation() }) { genre ->
@@ -95,57 +87,8 @@ fun MoviesScreen(onItemClick: (MoviesResult) -> Unit) {
                 onItemClick(movieResult)
             }
         } ?: kotlin.run {
-
             CustomMoviesAndTvShows(viewModel, TmdbState.MOVIES.getState(currentIconIndex)) { movieResult ->
                 onItemClick(movieResult)
-            }
-        }
-    }
-}
-
-@Composable
-fun MoviesAndTvShowsWithPagingLibrary(tmdbMovies: Flow<PagingData<MoviesResult>>, onMovieClick: (MoviesResult) -> Unit) {
-    val state = rememberLazyGridState()
-    val movies = tmdbMovies.collectAsLazyPagingItems()
-
-    Log.d("Statetetete", "listState ${state.firstVisibleItemIndex}")
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(all = 8.dp),
-        state = state
-    ) {
-
-        items(movies.itemCount) { index ->
-            val item = movies[index]
-            MovieItem(item = item, onMovieClick = onMovieClick)
-        }
-        movies.apply {
-            when {
-                loadState.refresh is LoadState.Loading -> {
-                    Log.d("Loading state", "loading")
-                    this@LazyVerticalGrid.item { LoadingItem() }
-                    this@LazyVerticalGrid.item { LoadingItem() }
-                }
-                loadState.append is LoadState.Loading -> {
-                    Log.d("Loading state2", "loading")
-                    this@LazyVerticalGrid.item { LoadingItem() }
-                    this@LazyVerticalGrid.item { LoadingItem() }
-                }
-                loadState.refresh is LoadState.Error -> {
-                    if ((loadState.refresh as LoadState.Error).error is NoDataFountException) {
-                        this@LazyVerticalGrid.item { LottieAnimationAccordingToRes(res = R.raw.no_data_available) }
-                    }
-                }
-                loadState.append is LoadState.Error -> {
-                    if ((loadState.append as LoadState.Error).error is NoDataFountException) {
-                        this@LazyVerticalGrid.item { LottieAnimationAccordingToRes(res = R.raw.no_data_available) }
-                    }
-                }
             }
         }
     }
@@ -207,6 +150,7 @@ fun MovieItem(item: MoviesResult?, onMovieClick: (MoviesResult) -> Unit) {
     })
 }
 
+/*
 @Composable
 fun LoadingItem() {
     CircularProgressIndicator(
@@ -219,4 +163,55 @@ fun LoadingItem() {
             )
     )
 }
+
+
+@Composable
+fun MoviesAndTvShowsWithPagingLibrary(tmdbMovies: Flow<PagingData<MoviesResult>>, onMovieClick: (MoviesResult) -> Unit) {
+    val state = rememberLazyGridState()
+    val movies = tmdbMovies.collectAsLazyPagingItems()
+
+    Log.d("Statetetete", "listState ${state.firstVisibleItemIndex}")
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(all = 8.dp),
+        state = state
+    ) {
+
+        items(movies.itemCount) { index ->
+            val item = movies[index]
+            MovieItem(item = item, onMovieClick = onMovieClick)
+        }
+        movies.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> {
+                    Log.d("Loading state", "loading")
+                    this@LazyVerticalGrid.item { LoadingItem() }
+                    this@LazyVerticalGrid.item { LoadingItem() }
+                }
+                loadState.append is LoadState.Loading -> {
+                    Log.d("Loading state2", "loading")
+                    this@LazyVerticalGrid.item { LoadingItem() }
+                    this@LazyVerticalGrid.item { LoadingItem() }
+                }
+                loadState.refresh is LoadState.Error -> {
+                    if ((loadState.refresh as LoadState.Error).error is NoDataFountException) {
+                        this@LazyVerticalGrid.item { LottieAnimationAccordingToRes(res = R.raw.no_data_available) }
+                    }
+                }
+                loadState.append is LoadState.Error -> {
+                    if ((loadState.append as LoadState.Error).error is NoDataFountException) {
+                        this@LazyVerticalGrid.item { LottieAnimationAccordingToRes(res = R.raw.no_data_available) }
+                    }
+                }
+            }
+        }
+    }
+}
+*/
+
 

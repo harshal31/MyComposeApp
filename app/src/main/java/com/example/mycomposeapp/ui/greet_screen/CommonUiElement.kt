@@ -18,8 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavDeepLink
@@ -86,7 +87,7 @@ fun LottieAnimationAccordingToRes(@RawRes res: Int) {
 
 
 @Composable
-fun ExpandableText(text: String, color: Color, size: Dp, minLinesToBeDisplayed: Int = 9) {
+fun ExpandableText(text: String, color: Color, size: TextUnit = 18.sp, minLinesToBeDisplayed: Int = 2) {
     var isExpanded by remember { mutableStateOf(false) }
     val textLayoutResultState = remember { mutableStateOf<TextLayoutResult?>(null) }
     var finalText by remember { mutableStateOf(text) }
@@ -109,6 +110,8 @@ fun ExpandableText(text: String, color: Color, size: Dp, minLinesToBeDisplayed: 
     }
     Text(
         text = finalText,
+        color = color,
+        fontSize = size,
         maxLines = if (isExpanded) Int.MAX_VALUE else minLinesToBeDisplayed,
         onTextLayout = { textLayoutResultState.value = it },
         modifier = Modifier
