@@ -7,16 +7,20 @@ package com.example.mycomposeapp.ui.movie_detail_screen
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.palette.graphics.Palette
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.mycomposeapp.R
@@ -48,6 +52,8 @@ fun MovieDetailScreen(movieId: Int) {
 @Composable
 fun MovieDetailSection(item: MovieDetailResponse) {
     val verticalScrollState = rememberScrollState()
+    var palette by remember { mutableStateOf<Palette?>(null) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -56,22 +62,23 @@ fun MovieDetailSection(item: MovieDetailResponse) {
 
         MovieHeader(
             item,
-            Modifier
-                .aspectRatio(12f / 9f)
-                .padding(bottom = 8.dp)
-        )
+            Modifier.aspectRatio(12f / 9f)
+        ) {
+            palette = it
+        }
 
         Column(
             modifier = Modifier
                 .wrapContentSize()
-                .padding(horizontal = 8.dp)
+                .background(Color(palette?.getLightVibrantColor(Color.Transparent.toArgb()) ?: 0))
+                .padding(horizontal = 8.dp, vertical = 8.dp)
         ) {
             val year = item.releaseDate.split("-").firstOrNull() ?: ""
             Text(
                 text = item.title.plus(if (year.isNotEmpty()) " (${year})" else ""),
-                color = textColor(),
+                color = palette.textColorDynamically(),
                 fontSize = 22.sp, fontWeight = FontWeight.Bold, modifier = Modifier
-                    .padding(all = 2.dp)
+                    .padding(bottom = 2.dp)
                     .horizontalScroll(rememberScrollState())
 
             )
@@ -80,22 +87,29 @@ fun MovieDetailSection(item: MovieDetailResponse) {
                 item, Modifier
                     .fillMaxSize()
                     .horizontalScroll(rememberScrollState())
-                    .padding(top = 4.dp, bottom = 2.dp)
+                    .padding(top = 4.dp, bottom = 2.dp), palette
             )
-            MovieOverviewAndTagline(item = item)
+            MovieOverviewAndTagline(item = item, palette)
         }
     }
 }
 
 @Composable
-fun MovieHeader(item: MovieDetailResponse, modifier: Modifier) {
+fun MovieHeader(item: MovieDetailResponse, modifier: Modifier, block: (Palette) -> Unit) {
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
             .data(WebUrlConstant.IMAGE_BASE_URL.plus(item.posterPath ?: item.backdropPath))
             .crossfade(true)
+            .allowHardware(false)
             .build(),
         contentScale = ContentScale.FillBounds,
     )
+
+    if (painter.state is AsyncImagePainter.State.Success) {
+        val bitmap = (painter.state as AsyncImagePainter.State.Success).result.drawable.toBitmap()
+        block(Palette.from(bitmap).generate())
+    }
+
     Image(
         modifier = modifier,
         painter = painter,
@@ -105,11 +119,11 @@ fun MovieHeader(item: MovieDetailResponse, modifier: Modifier) {
 }
 
 @Composable
-fun MovieReleaseInfoGenreAndDurationDetail(item: MovieDetailResponse, modifier: Modifier) {
+fun MovieReleaseInfoGenreAndDurationDetail(item: MovieDetailResponse, modifier: Modifier, palette: Palette?) {
     Row(modifier = modifier) {
         Text(
             text = item.releaseDate.plus(if (item.originalLanguage.isNotEmpty()) "(${item.originalLanguage})" else ""),
-            color = textColor(),
+            color = palette.textColorDynamically(),
             fontSize = 16.sp,
         )
 
@@ -117,7 +131,7 @@ fun MovieReleaseInfoGenreAndDurationDetail(item: MovieDetailResponse, modifier: 
             Spacer(modifier = Modifier.padding(horizontal = 2.dp))
             Text(
                 text = item.genres.joinToString { it.name },
-                color = textColor(),
+                color = palette.textColorDynamically(),
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
             )
@@ -127,7 +141,7 @@ fun MovieReleaseInfoGenreAndDurationDetail(item: MovieDetailResponse, modifier: 
             Spacer(Modifier.padding(horizontal = 2.dp))
             Text(
                 text = item.runtime.minutes.toString(),
-                color = textColor(),
+                color = palette.textColorDynamically(),
                 fontSize = 16.sp,
             )
         }
@@ -135,11 +149,11 @@ fun MovieReleaseInfoGenreAndDurationDetail(item: MovieDetailResponse, modifier: 
 }
 
 @Composable
-fun MovieOverviewAndTagline(item: MovieDetailResponse) {
+fun MovieOverviewAndTagline(item: MovieDetailResponse, palette: Palette?) {
     if (item.tagline.isNotEmpty()) {
         Text(
             text = item.tagline,
-            color = textColor(),
+            color = palette.textColorDynamically(),
             fontWeight = FontWeight.Light,
             fontStyle = FontStyle.Italic,
             fontSize = 16.sp,
@@ -150,13 +164,17 @@ fun MovieOverviewAndTagline(item: MovieDetailResponse) {
     if (item.overview.isNotEmpty()) {
         Text(
             text = "Overview",
-            color = textColor(),
+            color = palette.textColorDynamically(),
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
         )
 
         Spacer(modifier = Modifier.height(2.dp))
-        ExpandableText(text = item.overview, color = textColor(), size = 16.sp)
+        ExpandableText(
+            text = item.overview,
+            color = palette.textColorDynamically(),
+            size = 16.sp
+        )
     }
 }
 
@@ -164,3 +182,7 @@ fun MovieOverviewAndTagline(item: MovieDetailResponse) {
 fun textColor(): Color {
     return if (isSystemInDarkTheme()) Color.White else Color.Black
 }
+
+@Composable
+fun Palette?.textColorDynamically() = Color(this?.lightVibrantSwatch?.bodyTextColor ?: textColor().toArgb())
+

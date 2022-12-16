@@ -45,11 +45,7 @@ fun MoviesScreen(onItemClick: (MoviesResult) -> Unit) {
     val genre = viewModel.genre
     var currentIconIndex by remember { mutableStateOf(0) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
 
         TextFieldWithSwipeSuffixIcon(
             value = viewModel.searchValue.observeAsState("").value,
