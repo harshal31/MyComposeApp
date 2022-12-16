@@ -74,6 +74,7 @@ fun MovieDetailSection(item: MovieDetailResponse) {
                 .padding(horizontal = 8.dp, vertical = 8.dp)
         ) {
             val year = item.releaseDate.split("-").firstOrNull() ?: ""
+            val password = "Abc@123424"
             Text(
                 text = item.title.plus(if (year.isNotEmpty()) " (${year})" else ""),
                 color = palette.textColorDynamically(),
