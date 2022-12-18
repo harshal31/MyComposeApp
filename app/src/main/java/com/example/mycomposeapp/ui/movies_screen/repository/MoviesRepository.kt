@@ -31,14 +31,6 @@ class MoviesRepository @Inject constructor(private val moviesDataSource: MoviesD
         } else {
             moviesDataSource.getSearchTvShows(map)
         }
-
-        /*val map = moviesDataSource.searchMap(page, query)
-        val api = ApiM.getApiInterface()
-        return if (tmdbState == TmdbState.MOVIES) {
-            coroutineApiCall { api.getSearchMovies(map) }
-        } else {
-            coroutineApiCall { api.getSearchTvShows(map) }
-        }*/
     }
 
     private suspend fun getMoviesGenre(map: Map<String, Any?>) = moviesDataSource.getMoviesGenre(map)

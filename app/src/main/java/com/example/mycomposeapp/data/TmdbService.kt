@@ -25,6 +25,6 @@ interface TmdbService {
     @GET(EndPointConstant.SEARCH_MOVIES)
     suspend fun getSearchMovies(@QueryMap map: Map<String, @JvmSuppressWildcards Any?>): Response<Movies>
 
-    @GET(EndPointConstant.SEARCH_MOVIES)
+    @GET(EndPointConstant.SEARCH_TV_SHOWS)
     suspend fun getSearchTvShows(@QueryMap map: Map<String, @JvmSuppressWildcards Any?>): Response<Movies>
 }

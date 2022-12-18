@@ -50,6 +50,7 @@ fun MoviesScreen(onItemClick: (MoviesResult) -> Unit) {
             value = viewModel.searchValue.collectAsState("").value,
             onValueChange = {
                 viewModel.movieScreenState.value = if (it.isNotEmpty()) {
+                    viewModel.searchResponse.value = ResponseState.Loading()
                     MovieScreenState.SEARCH
                 } else {
                     viewModel.resetSearchPagination()
@@ -64,6 +65,7 @@ fun MoviesScreen(onItemClick: (MoviesResult) -> Unit) {
             onIconChanged = {
                 viewModel.currentIconIndex.value = it
                 if (genre.value !is ResponseState.Loading) {
+                    viewModel.movieScreenState.value = MovieScreenState.NO_SEARCH
                     viewModel.resetPagination()
                     viewModel.resetSearchPagination()
                     viewModel.initiateApiAsPerApiType(TmdbState.MOVIES.getState(it) to null)
@@ -114,25 +116,26 @@ fun MoviesScreen(onItemClick: (MoviesResult) -> Unit) {
                     LottieAnimationAccordingToRes(R.raw.searching)
                 }
                 is ResponseState.Success -> {
-                    Log.d("Success", "successresponse")
-                    if (viewModel.searchMoviesAndTvShows.isEmpty()) {
+                    Log.d("Success", "successresponse" + it.response.results.size)
+                    if (it.response.results.isNotEmpty()) {
                         viewModel.searchMoviesAndTvShows.addAll(it.response.results.filter {
                             it.posterPath.isNullOrEmpty().not() || it.backdropPath.isNullOrEmpty().not()
                         })
+                        it.response.results.clear()
                     }
-                }
-            }
 
-            if (viewModel.searchMoviesAndTvShows.toList().isEmpty()) {
-                LottieAnimationAccordingToRes(R.raw.no_data_found)
-            } else {
-                CustomSearchMoviesAndGenre(
-                    viewModel,
-                    TmdbState.MOVIES.getState(viewModel.currentIconIndex.value),
-                    viewModel.searchValue.collectAsState("").value,
-                    searchState
-                ) { movieResult ->
-                    onItemClick(movieResult)
+                    if (viewModel.searchMoviesAndTvShows.toList().isEmpty()) {
+                        LottieAnimationAccordingToRes(R.raw.no_data_found)
+                    } else {
+                        CustomSearchMoviesAndGenre(
+                            viewModel,
+                            TmdbState.MOVIES.getState(viewModel.currentIconIndex.value),
+                            viewModel.searchValue.collectAsState("").value,
+                            searchState
+                        ) { movieResult ->
+                            onItemClick(movieResult)
+                        }
+                    }
                 }
             }
         }

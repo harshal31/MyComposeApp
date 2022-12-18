@@ -60,10 +60,7 @@ fun MovieDetailSection(item: MovieDetailResponse) {
             .verticalScroll(verticalScrollState)
     ) {
 
-        MovieHeader(
-            item,
-            Modifier.aspectRatio(12f / 9f)
-        ) {
+        MovieHeader(item, Modifier.aspectRatio(12f / 9f)) {
             palette = it
         }
 

@@ -1,4 +1,3 @@
-
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class, ExperimentalAnimationApi::class)
 
 package com.example.mycomposeapp.ui.genericUIComposables
@@ -48,10 +47,11 @@ fun TextFieldWithSwipeSuffixIcon(
     roundedCornerSize: Dp = 26.dp,
     iconState: IconState = IconState.LEADING,
     onValueChange: (String) -> Unit,
+    maxLines: Int = 1,
     onIconChanged: ((Int) -> Unit)? = null
 ) {
     val pagerState = rememberPagerState()
-    var oldValue by rememberSaveable { mutableStateOf(-1)  }
+    var oldValue by rememberSaveable { mutableStateOf(-1) }
 
     LaunchedEffect(key1 = pagerState.currentPage) {
         if (oldValue != pagerState.currentPage) {
@@ -74,6 +74,7 @@ fun TextFieldWithSwipeSuffixIcon(
                 ),
                 placeholder = { AnimatedPlaceHolder(pagerState = pagerState) },
                 onValueChange = onValueChange,
+                maxLines = maxLines,
                 leadingIcon = { IconBox(pagerState = pagerState) },
             )
         }
@@ -90,6 +91,7 @@ fun TextFieldWithSwipeSuffixIcon(
                 ),
                 placeholder = { AnimatedPlaceHolder(pagerState = pagerState) },
                 onValueChange = onValueChange,
+                maxLines = maxLines,
                 trailingIcon = { IconBox(pagerState = pagerState) }
             )
         }

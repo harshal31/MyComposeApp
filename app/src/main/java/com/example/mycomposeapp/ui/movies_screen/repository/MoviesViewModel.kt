@@ -89,6 +89,7 @@ class MoviesViewModel @Inject constructor(private val moviesRepository: MoviesRe
                 .distinctUntilChanged()
                 .flatMapLatest { flowOf(it) }
                 .collect { query ->
+                    Log.d("Success", "successresponse"+query)
                     val response = moviesRepository.getSearchMoviesOrTvShows(TmdbState.MOVIES.getState(currentIconIndex.value), searchPage, query.lowercase())
                     searchResponse.value = response
                 }
@@ -118,6 +119,7 @@ class MoviesViewModel @Inject constructor(private val moviesRepository: MoviesRe
     fun resetSearchPagination() {
         searchPage = 1
         searchMoviesAndTvShows.clear()
+        searchValue.value = ""
     }
 
 }
