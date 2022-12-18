@@ -3,12 +3,7 @@
  */
 package com.example.mycomposeapp.ui.movies_screen
 
-import androidx.paging.PagingSource
-import androidx.paging.PagingState
-import com.example.mycomposeapp.model.MoviesResult
-import com.example.mycomposeapp.ui.movies_screen.repository.MoviesRepository
-import com.example.mycomposeapp.ui.movies_screen.repository.TmdbState
-
+/*
 class TvOrMoviesPagingSource(
     private val moviesRepository: MoviesRepository,
     private val tmdbState: TmdbState,
@@ -44,4 +39,4 @@ class TvOrMoviesPagingSource(
     }
 }
 
-class NoDataFountException(val msg: String = "No Data Available"): Exception(msg)
+class NoDataFountException(val msg: String = "No Data Available"): Exception(msg)*/

@@ -14,11 +14,12 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import java.util.concurrent.TimeUnit
 
 
-@InstallIn(SingletonComponent::class)
 @Module
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
     @Provides
@@ -54,12 +55,50 @@ object AppModule {
 
     @Provides
     fun provideApiInterface(retrofit: Retrofit): TmdbService {
-        return retrofit.create(TmdbService::class.java)
+        return retrofit.create()
     }
 
     @Provides
     fun provideMovieDetailService(retrofit: Retrofit): MovieDetailService {
-        return retrofit.create(MovieDetailService::class.java)
+        return retrofit.create()
     }
 
+}
+
+object ApiM {
+
+    fun provideHTTPLoggingInterceptor(): HttpLoggingInterceptor {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        return interceptor
+    }
+
+
+    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+    }
+
+
+    fun provideGson(): Gson {
+        return GsonBuilder().setLenient().setPrettyPrinting().create()
+    }
+
+
+    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(WebUrlConstant.BASE_API_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+    }
+
+
+    fun getApiInterface(): TmdbService {
+        return provideRetrofit(provideOkHttpClient(provideHTTPLoggingInterceptor()), provideGson()).create()
+    }
 }

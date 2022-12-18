@@ -10,6 +10,8 @@ object EndPointConstant  {
     const val MOVIE_DETAIL_URL = "movie/{movie_id}"
     const val MOVIE_DETAIL_CREDITS = "movie/{movie_id}/credits"
     const val MOVIE_DETAIL_RECOMMENDATIONS = "movie/{movie_id}/recommendations"
+    const val SEARCH_TV_SHOWS = "search/tv"
+    const val SEARCH_MOVIES = "search/movie"
 }
 
 

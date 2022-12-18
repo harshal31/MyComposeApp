@@ -8,4 +8,5 @@ object RestApiKey {
     const val PAGE = "page"
     const val WITH_WATCH_MONETIZATION_TYPES = "with_watch_monetization_types"
     const val WITH_GENRES = "with_genres"
+    const val QUERY = "query"
 }
