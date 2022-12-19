@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.mycomposeapp.data.ResponseState
 import com.example.mycomposeapp.model.PostsItem
 import com.example.mycomposeapp.navigation.Route
 import com.example.mycomposeapp.ui.genericUIComposables.IconState

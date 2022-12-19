@@ -18,7 +18,7 @@ data class RecommendedMovies(
     @SerializedName("adult")
     val adult: Boolean = false, // false
     @SerializedName("backdrop_path")
-    val backdropPath: Any = Any(), // null
+    val backdropPath: String? = "", // null
     @SerializedName("genre_ids")
     val genreIds: List<Int> = listOf(),
     @SerializedName("id")
@@ -32,7 +32,7 @@ data class RecommendedMovies(
     @SerializedName("popularity")
     val popularity: Double = 0.0, // 1.012564
     @SerializedName("poster_path")
-    val posterPath: Any = Any(), // null
+    val posterPath: String? = "", // null
     @SerializedName("release_date")
     val releaseDate: String = "", // 1994-05-09
     @SerializedName("title")

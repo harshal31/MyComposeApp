@@ -36,7 +36,7 @@ data class Cast(
     @SerializedName("popularity")
     val popularity: Double = 0.0, // 7.861
     @SerializedName("profile_path")
-    val profilePath: String = "" // /5XBzD5WuTyVQZeS4VI25z2moMeY.jpg
+    val profilePath: String? = "" // /5XBzD5WuTyVQZeS4VI25z2moMeY.jpg
 )
 
 data class Crew(

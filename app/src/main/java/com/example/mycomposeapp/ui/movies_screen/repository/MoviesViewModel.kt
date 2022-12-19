@@ -121,5 +121,4 @@ class MoviesViewModel @Inject constructor(private val moviesRepository: MoviesRe
         searchMoviesAndTvShows.clear()
         searchValue.value = ""
     }
-
 }
